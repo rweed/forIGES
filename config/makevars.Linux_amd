@@ -1,0 +1,12 @@
+FC=$(FCOMPILER)
+LD=$(FC)
+FPP=$(FC) -E
+MAKE=make
+INCLUDES=-I. -I $(INCPATH) -I $(MODPATH) -module $(MODPATH)
+DEFINES= $(DEBUGDEF)
+FCFLAGS= -v $(FOPTFLAGS) $(REALLOCLHS) -fPIC 
+LDFLAGS= -fPIC
+MOD=mod
+RULES=Linux_amd
+AR=ar rcs
+RANLIB=ranlib

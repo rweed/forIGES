@@ -1,0 +1,12 @@
+FC=$(FCOMPILER)
+LD=$(FC)
+FPP=$FC) -E
+MAKE=make
+INCLUDES=-I. -I$(INCPATH) -I$(MODPATH) -module $(MODPATH)
+DEFINES= -DNO_REAL128 $(DEBUGDEF)
+FCFLAGS= $(FOPTFLAGS) $(REALLOCLHS) -fpic -mcmodel=medium -tp=zen3 -traceback $(WARN)
+LDFLAGS= -fpic
+MOD=mod
+RULES=Linux_nvidia
+AR=ar rcs
+RANLIB=ranlib

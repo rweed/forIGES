@@ -1,0 +1,13 @@
+FC=$(FCOMPILER)
+LD=$(FC)
+FPP=$(FC) -E
+MAKE=make
+INCLUDES=-I. -I$(INCPATH) -I$(MODPATH) -module $(MODPATH)
+DEFINES= $(DEFINEVAL) $(DEBUGDEF)
+FCFLAGS= $(ARCHTYPE) $(FOPTFLAGS) $(REALLOCLHS) $(WARN) -align array64byte -xHost -traceback -nogen-interfaces -fPIC -stand
+LDFLAGS = -fPIC
+MOD=mod
+SMOD=smod
+RULES=Linux_intel-ifx
+AR=ar rcs
+RANLIB=ranlib

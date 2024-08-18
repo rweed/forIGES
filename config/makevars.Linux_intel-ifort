@@ -1,0 +1,13 @@
+FC=$(FCOMPILER)
+LD=$(FC)
+FPP=$(FC) -E
+MAKE=make
+INCLUDES=-I. -I./include -I$(INCPATH) -I$(MODPATH) -module $(MODPATH)
+DEFINES= $(DEFINEVAL) $(DEBUGDEF)
+FCFLAGS= $(ARCHTYPE) $(FOPTFLAGS) $(REALLOCLHS) $(WARN) -xHost -align -mavx -traceback -nogen-interfaces -fPIC -diag-disable=10448 -stand
+LDFLAGS= -fPIC -diag-disable=10448
+MOD=mod
+SMOD=smod
+RULES=Linux_intel-ifort
+AR=ar rcs
+RANLIB=ranlib

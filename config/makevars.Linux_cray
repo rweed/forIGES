@@ -1,0 +1,12 @@
+FC=$(COMPILER)
+LD=$(FC)
+FPP=$(FC) -e p
+MAKE=make
+MODPATHS=-p. -p $(MODPATH) 
+INCLUDES=-I. -I $(INCPATH) -I $(MODPATH) $(MODPATHS)
+DEFINES= 
+FCFLAGS=-e m -e f -d w -G2 -g -O0 -fPIC
+MOD=mod
+RULES=Linux_cray
+AR=ar rcs
+RANLIB=ranlib
