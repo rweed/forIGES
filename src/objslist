@@ -1,0 +1,32 @@
+OBJS= IGES_params.o \
+ commandLineUtils.o \
+ IGES_utils.o \
+ IGES_Gsection.o \
+ IGES_Dsection.o \
+ IGES_Psection.o \
+ PElist.o \
+ DElist.o \
+ forIGES.o 
+
+MODS=iges_params.mod \
+ commandlineutils.mod \
+ iges_utils.mod \
+ iges_gsection.mod \
+ iges_dsection.mod \
+ iges_psection.mod \
+ alist.mod \
+ pelist.mod \
+ delist.mod \
+ foriges.mod 
+
+SRC=IGES_params.F90 \
+ commandLineUtils.F90 \
+ IGES_utils.F90 \
+ IGES_Gsection.F90 \
+ IGES_Dsection.F90 \
+ IGES_Psection.F90 \
+ Alist.F90 \
+ PElist.F90 \
+ DElist.F90 \
+ forIGES.F90 
+
