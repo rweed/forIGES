@@ -1,0 +1,303 @@
+#!/usr/bin/env sh 
+
+# set thisdir and prefix to current working dir
+
+THISDIR=`pwd`
+PREFIX=`pwd`
+
+# set paths to config, modules, lib, bin, src, and include subdirs
+
+CONFIGPATH=$THISDIR/config
+MODPATH=$THISDIR/modules
+LIBPATH=$THISDIR/lib
+BINPATH=$THISDIR/bin
+SRCPATH=$THISDIR/src
+INCPATH=$THISDIR/include
+
+DEFAULT_LIBNAME=libforIGES
+
+SET_LIBNAME="no"
+
+COMMONLIB=
+
+# get system and coputer names
+OS=`uname -s`
+COMPUTERNAME=`uname -n`
+
+#set compiler default to gfortran - not used
+FCOMPILER_DEFAULT=gfortran
+# set intial flags to no
+
+
+USE_WARN="no"
+SETCPUTYPE="no"
+SETDEF="no"
+BUILDDEBUG="no"
+LHSREALLOC="yes"
+COMPILER_VENDOR="gcc"
+SHARED_LIB_EXT="so"
+GCC_VERSION="default"
+WARN=
+OPTFLAGS="-O0 -g"
+OPTTIM="no"
+OPTVAL=
+DEBUGDEF=
+DEFINEVAL=
+FCOMPILER=$FCOMPILER_DEFAULT
+ARCHTYPE=
+NEWLIBNAME=
+
+if [ "$OS" = "Darwin" ]; then
+  SHARED_LIB_EXT="dylib"
+fi
+ 
+if [ "$OS" = "Windows" ]; then
+  SHARED_LIB_EXT="dll"
+fi
+
+# intialize some local and global variables to blank
+
+OPTIND=1
+
+while getopts :c-:p-: OPTION; do
+  case $OPTION in
+   -) LONG_OPTARG="${OPTARG#*=}"
+       case $OPTARG in
+       compiler=?*) COMPILER_VENDOR="$LONG_OPTARG";;
+       compiler*) echo "No arg for --$OPTARG option" >&2; exit 2;;
+       warn=?*) WARNOPT="$LONG_OPTARG"
+         USE_WARN="yes";;
+       define=?*) DEFVAL="$LONG_OPTARG"
+         SETDEF="yes";;
+       opt-level=?*) OPTVAL="$LONG_OPTARG"
+         OPTTIM="yes";;
+       build-debug=?*) BUILDDEBUG="$LONG_OPTARG";;
+       esac;;
+    esac
+done
+
+# test for compilers and set options. default optimization is -O0,
+# default warn. realloc-lhs=yes is set explicitly since this code
+# used deferred length strings 
+
+# default is gfortran. Only gfortran 11-14 currenly supported
+
+if [ "$COMPILER_VENDOR" = "gcc" ]; then
+  COMPILERVARS=$OS"_gcc"
+  REALLOCLHS="-frealloc-lhs"
+ if [ "$GCC_VERSION" = "default" ]; then
+   FCOMPILERVERSION=$( gfortran --version | grep -i fortran)
+   FCOMPILER="gfortran"
+ fi
+
+ if [ "$USE_WARN" = "yes" ]; then
+   WARN="-W$WARNOPT"
+ fi
+ if [ "$OPTTIM" = "yes" ]; then
+   FOPTFLAGS="-O$OPTVAL -g"
+ fi
+fi
+
+# Intel ifort - depracated as of 2025 release 
+
+if [ "$COMPILER_VENDOR" = "intel-ifort" ]; then
+  COMPILERVARS=$OS"_intel-ifort"
+  FCOMPILERVERSION=$( ifort --version | grep ifort)
+  FCOMPILER="ifort"
+  REALLOCLHS="-assume realloc_lhs"
+  if [ "$USE_WARN" = "yes" ]; then
+    WARN="-warn $WARNOPT"
+  fi
+  if [ "$OPTTIM" = "yes" ]; then
+    FOPTFLAGS="-O$OPTVAL -g"
+  fi
+fi
+
+# Intel ifx - its new its shiny
+
+if [ "$COMPILER_VENDOR" = "intel-ifx" ]; then
+  COMPILERVARS=$OS"_intel-ifx"
+  FCOMPILERVERSION=$( ifx --version | grep ifx)
+  FCOMPILER="ifx"
+  REALLOCLHS="-assume realloc_lhs"
+  if [ "$USE_WARN" = "yes" ]; then
+    WARN="-warn $WARNOPT"
+  fi
+  if [ "$OPTTIM" = "yes" ]; then
+    FOPTFLAGS="-O$OPTVAL -g"
+  fi
+fi
+
+# Nvidia 
+
+ if [ "$COMPILER_VENDOR" = "nvidia" ]; then
+  COMPILERVARS=$OS"_nvidia"
+  FCOMPILERVERSION=`nvfortran --version`
+  FCOMPILER="nvfortran"
+  REALLOCLHS="-Mallocatable=03"
+  if [ "$USE_WARN" = "yes" ]; then
+    WARN="-Minform=$WARNOPT"
+  fi
+  if [ "$OPTTIM" = "yes" ]; then
+    FOPTFLAGS="-O$OPTVAL -g"
+  fi
+ fi
+
+# AMC AOCC flang and clang
+
+ if [ "$COMPILER_VENDOR" = "amd" ]; then
+  COMPILERVARS=$OS"_amd"
+  FCOMPILERVERSION=`flang --version`
+  FCOMPILER="flang"
+  REALLOCLHS="-Mallocatable=03"
+  if [ "$USE_WARN" = "yes" ]; then
+    WARN="-Minform=$WARNOPT"
+  fi
+  if [ "$OPTTIM" = "yes" ]; then
+    FOPTFLAGS="-O$OPTVAL -g"
+  fi
+ fi
+
+# different gcc versions - on Linux systems with deb packaging (Ubuntu,
+# debian, and Linux Mint are a few) you can install a different version
+# of gfortran than the default version for you current operating system
+# version. Usually these have an extension on the file name such as
+# gfortran-13 or gfortran-14. I'm not sure how other non-Debian based systems
+# handle this
+
+#gcc11
+
+ if [ "$COMPILER_VENDOR" = "gcc11" ]; then
+   COMPILERVARS=$OS"_gcc"
+   FCOMPILERVERSION=$(gfortran-11 --version | grep "Fortran")
+   FCOMPILER="gfortran-11"
+   REALLOCLHS="-frealloc-lhs"
+   if [ "$USE_WARN" = "yes" ]; then
+     WARN="-W$WARNOPT"
+   fi
+   if [ "$OPTTIM" = "yes" ]; then
+     FOPTFLAGS="-O$OPTVAL -g"
+   fi
+ fi
+
+# gcc12
+
+ if [ "$COMPILER_VENDOR" = "gcc12" ]; then
+   COMPILERVARS=$OS"_gcc"
+   FCOMPILERVERSION=$(gfortran-12 --version | grep "Fortran")
+   FCOMPILER="gfortran-12"
+   REALLOCLHS="-frealloc-lhs"
+   if [ "$USE_WARN" = "yes" ]; then
+     WARN="-W$WARNOPT"
+   fi
+   if [ "$OPTTIM" = "yes" ]; then
+     FOPTFLAGS="-O$OPTVAL -g"
+   fi
+ fi
+
+#gcc13
+
+ if [ "$COMPILER_VENDOR" = "gcc13" ]; then
+   COMPILERVARS=$OS"_gcc"
+   FCOMPILERVERSION=$(gfortran-13 --version | grep "Fortran")
+   FCOMPILER="gfortran-13"
+   REALLOCLHS="-frealloc-lhs"
+   if [ "$USE_WARN" = "yes" ]; then
+     WARN="-W$WARNOPT"
+   fi
+   if [ "$OPTTIM" = "yes" ]; then
+     FOPTFLAGS="-O$OPTVAL -g"
+   fi
+ fi
+
+#gcc14
+
+ if [ "$COMPILER_VENDOR" = "gcc14" ]; then
+   COMPILERVARS=$OS"_gcc"
+   FCOMPILERVERSION=$(gfortran-14 --version | grep "Fortran")
+   FCOMPILER="gfortran-14"
+   REALLOCLHS="-frealloc-lhs"
+   if [ "$USE_WARN" = "yes" ]; then
+     WARN="-W$WARNOPT"
+   fi
+   if [ "$OPTTIM" = "yes" ]; then
+     FOPTFLAGS="-O$OPTVAL -g"
+   fi
+ fi
+
+#cray CCE
+
+ if [ "$COMPILER_VENDOR" = "cray" ]; then
+   COMPILERVARS=$OS"_cray"
+   FCOMPILERVERSION=`ftn -V`
+   FCOMPILER="ftn"
+   if [ "$OPTTIM" = "yes" ]; then
+     FOPTFLAGS="-O$OPTVAL -g"
+   fi
+ fi
+
+if [ "$BUILDDEBUG" = "yes" ]; then
+   DEBUGDEF="-DDBG"
+fi
+if [ "$SETDEF" = "yes" ]; then
+   DEFINEVAL="-D$DEFVAL"
+fi
+
+if [ ! -s "$THISDIR/config/makevars.$COMPILERVARS" ]
+then
+ echo "$COMPILERVARS is not supported!"
+ return 1
+fi
+
+COMMONLIB=$DEFAULT_LIBNAME
+
+echo " "
+echo " Building forIGES on : $OS system $COMPUTERNAME using the $COMPILER_VENDOR Compiler : "
+echo " "
+echo "  *** Base PATHS set to: "
+echo " "
+echo " THISDIR       set to : $THISDIR"
+echo " CONFIGPATH    set to : $CONFIGPATH"
+echo " SRCPATH       set to : $SRCPATH"
+echo " INCPATH       set to : $INCPATH"
+echo " MODPATH       set to : $MODPATH"
+echo " LIBPATH       set to : $LIBPATH"
+echo " BINPATH       set to : $BINPATH"
+echo " "
+echo "  ***** Compilers and compiler options set to: "
+echo " "
+
+echo " Fortran Compiler set to : $FCOMPILERVERSION"
+echo " "
+echo " Fortran Compiler Options set to"
+echo " "
+echo " Fortran OPTFLAGS set to : $FOPTFLAGS"
+echo " WARN             set to : $WARN"
+echo " REALLOCLHS       set to : $REALLOCLHS"
+echo " DEFINEVAL        set to : $DEFINEVAL"
+echo " DEBUGDEF         set to : $DEBUGDEF"
+echo " COMMONLIB        set to : $COMMONLIB"
+echo " "
+echo " COMPILERVARS  set to : $COMPILERVARS"
+echo " "
+
+# export shell variables to parent environment so make can see them
+
+export OS
+export THISDIR
+export CONFIGPATH
+export SRCPATH
+export INCPATH
+export MODPATH
+export LIBPATH
+export BINPATH
+export COMPILERVARS
+export FCOMPILER
+export FOPTFLAGS
+export REALLOCLHS
+export WARN
+export DEFINEVAL
+export DEBUGDEF
+export COMMONLIB
+ 
+#end of script
