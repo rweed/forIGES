@@ -1,0 +1,47 @@
+name = "forIGES"
+version = "0.1"
+author = "Richard Weed"
+maintainer = "Richard Weed"
+copyright = "Copyright (c) 2024, Richard Weed"
+license = "BSD-3"
+description = "Modern Fortran Library for Reading and Writing IGES CAD Files"
+homepage = "https://github.com/rweed/forIGES"
+
+[library]
+source-dir = "src"
+
+[install]
+library = true
+
+[build]
+auto-tests = false 
+
+[[test]]
+name = "testReadList"
+source-dir = "test"
+main = "testReadList.F90"
+
+[[test]]
+name = "testReadFile"
+source-dir = "test"
+main = "testReadFile.F90"
+
+[[test]]
+name = "testWriteFile"
+source-dir = "test"
+main = "testWriteFile.F90"
+
+[[test]]
+name = "testArrayFilter"
+source-dir = "test"
+main = "testArrayFilter.F90"
+
+[[test]]
+name = "testFilterWrite"
+source-dir = "test"
+main = "testFilterWrite.F90"
+
+[[test]]
+name = "testGenNURBSsurf"
+source-dir = "test"
+main = "testGenNURBSsurf.F90"
