@@ -128,7 +128,7 @@ Please report any bugs, new feature requests etc. on the forIGES Github reposito
 
 ### Future Plans
 
-Based on user feedback, support for more entities can be added. A more detailed Users Guide in Markdown and PDF forms can be found [here](https://github.com/rweed/forIGES/doc) that gives an overview of the software and the procedures used to test it. Support for Windows and Macs is also planned. The ultimate goal of this project is to provide a way to extract non-NURBS geometric entities from an IGES file and then convert them to a NURBS description (where possible) as was done in References 2 through 5.
+Based on user feedback, support for more entities can be added. A more detailed Users Guide in Markdown form can be found [here](https://github.com/rweed/forIGES/doc/A_Hitchhikers_Guide_To_forIGES.md) that gives an overview of the software and the procedures used to test it. Support for Windows and Macs is also planned. The ultimate goal of this project is to provide a way to extract non-NURBS geometric entities from an IGES file and then convert them to a NURBS description (where possible) as was done in References 2 through 5.
 
 ### References
 
