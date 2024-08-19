@@ -1,6 +1,6 @@
 ### Description
 
-forIGES is a set of Modern Fortran utilities for reading and writing a subset ofthe IGES CAD file entities described in the IGES 5.3 specification. The focus of forIGES is on geometric entities such as NURBS curves and surfaces. Therefore, the complete IGES specification is not supported. Users should obtain a copy of the IGES 5.3 specification prior to attempting to use this software. A PDF of the 5.3 specification can be obtained from [here](https://web.archive.org/web/20120821190122/http://www.uspro.org/documents/IGES5-3_forDownload.pdf) 
+forIGES is a set of Modern Fortran utilities for reading and writing a subset of the IGES CAD file entities described in the IGES 5.3 specification. The focus of forIGES is on geometric entities such as NURBS curves and surfaces. Therefore, the complete IGES specification is not supported. Users should obtain a copy of the IGES 5.3 specification prior to attempting to use this software. A PDF of the 5.3 specification can be obtained from [here](https://web.archive.org/web/20120821190122/http://www.uspro.org/documents/IGES5-3_forDownload.pdf) 
 
 ### Supported IGES entities
 
