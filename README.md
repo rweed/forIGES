@@ -7,46 +7,46 @@ forIGES is a set of Modern Fortran utilities for reading and writing a subset of
 The following IGES entities are supported. The entities chosen are a mixture 
 of entities supported by previous work documented in the References.
  
-> Type number      Description  
-  
- -        0            Null  
- -      100        Circular  arc  
- -      102        Composite curve  
- -      104        Conic arc  
- -      106        Copious data (forms 1-3, 11-13, 63)  
- -      108        Plane  
- -      110        Line  
- -      112        Parametric Spline Curve  
- -      114        Parametric Spline Surface   
- -      116        Point  
- -      118        Ruled Surface  
- -      120        Surface of Revolution  
- -      122        Tabulated Cylinder  
- -      123        Direction  
- -      124        Transformation Matrix  
- -      126        Rational B-spline curve  
- -      128        Rational B-spline surface  
- -      130        Offset Curve  
- -      140        Offset Surface  
- -      141        Boundary  
- -      142        Curve on a Parametric Surface  
- -      143        Bounded Surface  
- -      144        Trimmed (parametric) surface  
- -      190        Plane Surface   
- -      192        Right Circular Cylinder Surface  
- -      194        Right Circular Conical Surface  
- -      196        Spherical Surface  
- -      198        Toroidal Surface  
- -      212        General Note  
- -      308        Subfigure Definition  
- -      314        Color Definition  
- -      402        Associativity Instance  
- -      406        Property (forms 1 and 15)  
- -      408        Singular Subfigure instance  
- -      502        Vertex list  
- -      504        Edge  
- -      508        Loop  
- -      510        Face  
+Type Description  
+
+-   0  Null  
+- 100  Circular  arc  
+- 102  Composite curve  
+- 104  Conic arc  
+- 106  Copious data (forms 1-3, 11-13, 63)  
+- 108  Plane  
+- 110  Line  
+- 112  Parametric Spline Curve  
+- 114  Parametric Spline Surface   
+- 116  Point  
+- 118  Ruled Surface  
+- 120  Surface of Revolution  
+- 122  Tabulated Cylinder  
+- 123  Direction  
+- 124  Transformation Matrix  
+- 126  Rational B-spline curve  
+- 128  Rational B-spline surface  
+- 130  Offset Curve  
+- 140  Offset Surface  
+- 141  Boundary  
+- 142  Curve on a Parametric Surface  
+- 143  Bounded Surface  
+- 144  Trimmed (parametric) surface  
+- 190  Plane Surface   
+- 192  Right Circular Cylinder Surface  
+- 194  Right Circular Conical Surface  
+- 196  Spherical Surface  
+- 198  Toroidal Surface  
+- 212  General Note  
+- 308  Subfigure Definition  
+- 314  Color Definition  
+- 402  Associativity Instance  
+- 406  Property (forms 1 and 15)  
+- 408  Singular Subfigure instance  
+- 502  Vertex list  
+- 504  Edge  
+- 508  Loop  
+- 510  Face  
 
 ### Building forIGES
 
