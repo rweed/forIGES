@@ -58,7 +58,7 @@ Currently forIGES has only been built and tested on Linux systems. Support for W
  > NVIDIA   nvfortran version 24.7  
  > AMD AOCC flang     version 16.0.3 
 
-Both Intel compilers, GCC, and NVIDIA appear to compile without error and generate correct results for all the forIGES test cases. flang appears to compile without error and runs the read tests correctly but produces erroneous results for the IGES file creation tests so flang cannot be recommended at this point.  
+Both Intel compilers, GCC, and NVIDIA appear to compile without error and generate correct results for all the forIGES test cases. flang appears to compile without error and runs the read tests correctly but produces erroneous results for the IGES file creation tests so flang cannot be recommended at this time.  
 
 #### Building forIGES Using Make
 
