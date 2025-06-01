@@ -2,7 +2,7 @@
 ! This file is part of the forIGES library
 ! https://github.com/rweed/forIGES
 
-! Copyright (C) 2024 Richard Weed.
+! Copyright (C) 2025 Richard Weed.
 ! All rights reserved.
 
 ! Redistribution and use in source and binary forms, with or without 
@@ -35,7 +35,6 @@
 ! OTHERWISE), ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 ! ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 Module IGES_params
 
 !! Parameters, enumerators, and derived types used by forIGES routines
@@ -43,21 +42,43 @@ Module IGES_params
 !! Author  : Richard Weed
 
 !! Version : 0.1 (Beta release 1)
-!! Date    : August 18, 2024
+!! Date    : May 31, 2025
 
-  USE ISO_FORTRAN_ENV, stdin=>input_unit, stdout=>output_unit,                &
-                       stderr=>error_unit, SP=>REAL32, DP=>REAL64
+!! Modifications :
+!!  May 31, 2025 - added support for quad and extended double precision
+!!                 Also added checkIGESwp routine to check current working
+!!                 precision
+
+                 
+  USE ISO_FORTRAN_ENV, ONLY: stdin=>input_unit, stdout=>output_unit,          &
+                       stderr=>error_unit
 
   USE ISO_C_BINDING, ONLY: C_NULL_CHAR
  
   Implicit NONE
 
-#ifdef REAL4
+  Integer, Parameter :: SP  = SELECTED_REAL_KIND(6)
+  Integer, Parameter :: DP  = SELECTED_REAL_KIND(15)
+  Integer, Parameter :: XDP = SELECTED_REAL_KIND(18)
+  Integer, Parameter :: QP  = SELECTED_REAL_KIND(33)
+ 
+#ifdef REAL32
   Integer, Parameter :: WP = SP 
   !! Working precision set to single-precision 
-#else
-  Integer, Parameter :: WP = DP 
-  !! Working precision set to double-precision 
+#elif defined REAL64
+  Integer, Parameter :: WP  = DP 
+  !! Working precision set to double precision
+#elif defined REALXDP
+  Integer, Parameter :: WP  = MAX(DP,XDP)
+  !! Working precision set to extended double precision if supported and 
+  !! falls back to double precision if it isn't
+#elif defined REAL128
+  Integer, Parameter :: WP = MAX(DP,QP)
+  !! Working precision set to quad-precision if supported and falls back to
+  !! double precision if it isn't
+#else 
+  Integer, Parameter :: WP = DP
+  !! Default working precision is double precision
 #endif
 
 ! Define some enumerators for color no., line font pattern, drafting standard
@@ -69,13 +90,11 @@ Module IGES_params
     !! Color no. enumerator
   End Enum
 
-
   Enum, Bind(C)
     Enumerator :: NO_FONT_PATTERN=0, SOLID, DASHED, PHANTOM, CENTERLINE,      &
                   DOTTED
     !! Line Font Pattern enumerator
   End Enum
-
 
   Enum, Bind(C)
 
@@ -102,7 +121,7 @@ Module IGES_params
   !! Define a default format for outputing REAL data in IGES files 
   Character(7)            :: REAL_FORMAT         = DEFAULT_REAL_FORMAT
   !! Initialize REAL_FORMAT to default
-  Character(5), Parameter :: FORIGES_VERSION     = "V0.1 "
+  Character(5), Parameter :: FORIGES_VERSION     = "V0.2 "
   !! Current forIGES version
   Character(1), Parameter :: default_field_separator   = ","
   !! Default field separator
@@ -117,7 +136,6 @@ Module IGES_params
   !! Set field separator to default
   Character(1), Save :: record_terminator = default_record_terminator
   !! Set record terminator to default
-
 
   Type :: string_t
 !! Type string_t is used to define a ragged array of strings
@@ -183,8 +201,8 @@ Module IGES_params
 !      154,    & !! Right Cicular Cylinder
 !      164,    & !! Solid of Linear Extrusion
 !      180,    & !! Boolean Tree
-!      186,    & !! Manifold Solid BREP Object
-!      514     & !! Shell (Form 1 only)
+
+  Private :: SP, DP, XDP, QP
 
 Contains
 
@@ -193,15 +211,21 @@ Contains
 !! modify global REAL_FORMAT string from default value
 
     Integer, Optional, Intent(IN) :: num_decimals
-    !!  Number of decimal points to be used for REAL number output in IGES files
+    !! Number of decimal points to be used for REAL number output in IGES files
 
     Integer      :: nd
     Character(2) :: ndc
+
+    Call checkIGESwp
 
     If (WP==SP) Then
       nd = 6
     ElseIf(WP==DP) Then
       nd = 15
+    ElseIf(WP==XDP) Then
+      nd = 18
+    ElseIf(WP==QP) Then
+      nd = 33   ! 33 is probably overkill maybe use just 18?
     Else
       nd = 9 
     End If
@@ -216,4 +240,57 @@ Contains
 
   End Subroutine setRealFormat
  
+  Subroutine checkIGESwp
+    !! Checks working precision (WP) parameter and support for quad and
+    !! extended double precision
+
+    Print *,''
+    Write(*,'(" **** Checking working precision and support for quad and extended double precision ****")')
+
+    If (XDP <= 0 .OR. XDP==DP) Then
+       Print *,'' 
+       Write(*,'(" forIGES: extended double precision not supported by this compiler")')
+       If (XDP <= 0 .OR. XDP == DP) Then
+         Write(*,'(" forIGES: double precision is used instead ")')
+       End If
+    End If
+    If (XDP >0 .AND. XDP/=DP .AND. XDP/=QP) Then
+        Print *,'' 
+        Write(*,'(" forIGES: extended double precision supported on this compiler")')
+    End If
+    If (XDP == QP .AND. QP>0) Then
+        Print *,'' 
+        Write(*,'(" forIGES: extended double precision supported as quad precision on this compiler")')
+    End If
+    If (QP <= 0 .OR. QP==DP) Then
+        Print *,''
+        Write(*,'(" forIGES: quad precision not supported by this compiler")')
+       If (QP == DP) Then
+         Write(*,'(" forIGES: double precision is used instead ")')
+       End If
+    End If
+    If (QP > 0 .AND. QP/=DP) Then      
+        Print *,''
+        Write(*,'(" forIGES: quad precision is supported on this compiler")')
+    End If
+ 
+    If (WP==SP) Then
+        Print *,''
+        Write(*,'(" forIGES: Current working precision is single precision (4 bytes)")')
+    End If 
+    If (WP==DP) Then 
+        Print *,''
+        Write(*,'(" forIGES: Current working precision is double precision (8 bytes)")')
+    End If 
+    If (WP==XDP .AND. XDP/=DP .AND. XDP/=QP) Then 
+        Print *,''
+        Write(*,'(" forIGES: Current working precision is extended double precision (10 bytes)")')
+    End If 
+    If (WP==QP .AND. QP/=DP) Then 
+        Print *,'' 
+        Write(*,'(" forIGES: Current working precision is quad precision (16 bytes)")')
+    End If 
+
+  End Subroutine checkIGESwp
+
 End Module IGES_params 
