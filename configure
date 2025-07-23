@@ -225,6 +225,21 @@ fi
    fi
  fi
 
+#gcc15
+
+ if [ "$COMPILER_VENDOR" = "gcc15" ]; then
+   COMPILERVARS=$OS"_gcc"
+   FCOMPILERVERSION=$(gfortran-15 --version | grep "Fortran")
+   FCOMPILER="gfortran-15"
+   REALLOCLHS="-frealloc-lhs"
+   if [ "$USE_WARN" = "yes" ]; then
+     WARN="-W$WARNOPT"
+   fi
+   if [ "$OPTTIM" = "yes" ]; then
+     FOPTFLAGS="-O$OPTVAL -g"
+   fi
+ fi
+
 #cray CCE
 
  if [ "$COMPILER_VENDOR" = "cray" ]; then
