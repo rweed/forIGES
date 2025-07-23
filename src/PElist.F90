@@ -458,24 +458,24 @@ CONTAINS
  
   End Function listSize 
 
-  Subroutine deallocPElistType(list)
+!  Subroutine deallocPElistType(list)
   !! Completely deallocates an allocatable PE list case
   !! Dont use for non-allocatable lists
 
-    Type(PElist_t), Allocatable, Target, Intent(INOUT) :: list
+!    Type(PElist_t), Allocatable, Target, Intent(INOUT) :: list
 
 
-    Call list%delete()
-    If (ALLOCATED(list)) DEALLOCATE(list)
+!    Call list%delete()
+!    If (ALLOCATED(list)) DEALLOCATE(list)
 
-  End Subroutine deallocPElistType
+!  End Subroutine deallocPElistType
 
-  Subroutine deletePElist(list)
+!  Subroutine deletePElist(list)
 
-    Type(PElist_t), Intent(INOUT) :: list
-    Call list%delete()
- 
-  End Subroutine deletePElist 
+!    Type(PElist_t), Intent(INOUT) :: list
+!    Call list%delete()
+! 
+!  End Subroutine deletePElist 
 
   Subroutine clear(list, keep)
  !! Remove nodes from last to first. Keep data but destroy links if

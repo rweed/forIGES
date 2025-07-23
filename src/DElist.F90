@@ -463,23 +463,23 @@ CONTAINS
  
   End Function listSize 
 
-  Subroutine deallocDElist(list)
-  !! Completely deallocates an allocatable DE list case. Don't use for 
-  !! non-allocatable lists
+! Subroutine deallocDElist(list)
+! !! Completely deallocates an allocatable DE list case. Don't use for 
+! !!non-allocatable lists
 
-    Type(DElist_t), Allocatable, Target, Intent(INOUT) :: list
+!   Type(DElist_t), Allocatable, Target, Intent(INOUT) :: list
 
-    Call list%delete()
-    If (ALLOCATED(list)) DEALLOCATE(list)
+!   Call list%delete()
+!   If (ALLOCATED(list)) DEALLOCATE(list)
 
-  End Subroutine deallocDElist
+! End Subroutine deallocDElist
 
-  Subroutine deleteDElist(list)
+! Subroutine deleteDElist(list)
 
-    Type(DElist_t), Intent(INOUT) :: list
-    Call list%delete()
- 
-  End Subroutine deleteDElist 
+!   Type(DElist_t), Intent(INOUT) :: list
+!   Call list%delete()
+!
+! End Subroutine deleteDElist 
 
   Subroutine clear(list, keep)
  !! Remove nodes from last to first. Keep data but destroy links if

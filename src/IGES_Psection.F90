@@ -2406,12 +2406,11 @@ Contains
     Real(WP), Allocatable :: KR(:)
 !!    Real(WP), Allocatable :: temp(:) 
 
-    Integer :: i, iform, dum
+    Integer :: i, dum
 
     IP = 0
     N  = 0
     ZT = 0.0_WP
-
     this%form = 1
     If(PRESENT(form)) this%form = form
     Select Case (form)
@@ -2430,7 +2429,7 @@ Contains
           ALLOCATE(KR(N), SOURCE=0.0_WP)
         End If 
 
-        If (IP == 1 .OR. iform == 63) Then
+        If (IP == 1 .OR. form == 63) Then
           Read(string,*) dum, dum, dum, ZT, (X(i),Y(i), i=1,N)
         ElseIf(IP == 2 ) Then
           Read(string,*) dum, dum, dum, (X(i),Y(i),Z(i), i=1,N)
@@ -2442,7 +2441,7 @@ Contains
 
         this%IP          = IP 
         this%N           = N
-        If (IP == 1 .OR. iform==63) Then
+        If (IP == 1 .OR. form==63) Then
           this%ZT = ZT
         End If
         Call MOVE_ALLOC(X, this%X) 
@@ -4961,7 +4960,7 @@ Contains
 
     k = this%K
     m = this%M
-    nfields = 12 + SIZE(this%T) + 4*(k+1)
+    nfields = 13 + SIZE(this%T) + 4*(k+1)
 
     ALLOCATE(fields(nfields))
 
@@ -8543,7 +8542,6 @@ Contains
 
     Character(60)             :: buf
     Character(:), Allocatable :: fmt
-    Character(:), Allocatable :: nh 
 
     Type(string_t), Allocatable :: fields(:)
     Type(string_t), Allocatable :: recbuf(:)
@@ -8569,9 +8567,9 @@ Contains
 
     nc = LEN(this%CNAME)
     buf = REPEAT(" ",60)
-    Write(buf,'(i0,"H")') nc
-    nh = TRIM(ADJUSTL(nh))
-    fields(5)%str = nh//this%CNAME//";"
+    Write(buf,*) nc
+
+    fields(5)%str = TRIM(ADJUSTL(buf))//"H"//this%CNAME(1:nc)//";"
 
     Call fieldsToRecs(fields, recbuf, 64)
     Call genPrecords(recbuf, Precords)

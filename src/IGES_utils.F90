@@ -33,6 +33,7 @@
 ! WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
 ! OTHERWISE), ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 ! ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 Module IGES_utils
 !! Utility routines used by forIGES library routines 
 
@@ -290,8 +291,7 @@ Contains
       ibuf(m-i+1:m-i+1)=buf(n-i+1:n-i+1)
     End Do
     ibuf(1:m-n)=' '
-    blnk=ibuf
-    Return
+    blnk=ibuf(1:8)
 
   End Function blnk 
 
@@ -551,13 +551,13 @@ Contains
 
 ! OPEN THE INPUT AND TEMP FILES...
 
-    Open(unit=u10,file=infile,status='OLD', FORM="FORMATTED")
+    Open(newunit=u10,file=infile,status='OLD', FORM="FORMATTED")
 !    Open(unit=u1,file='TEST.TMP',status='NEW',carriagecontrol='LIST')
-    Open(unit=u1,file='TEST.TMP',status='NEW',FORM="FORMATTED")
-    Open(unit=u2,file='FILE2.TMP',status='NEW',recl=80, &
+    Open(newunit=u1,file='TEST.TMP',status='NEW',FORM="FORMATTED")
+    Open(newunit=u2,file='FILE2.TMP',status='NEW',recl=80, &
      access='DIRECT',form="FORMATTED")
-    Open(unit=u3,file='FILE3.TMP',status='NEW', FORM="FORMATTED")
-    Open(unit=u5,file='FILE5.TMP',status='NEW', FORM="FORMATTED")
+    Open(newunit=u3,file='FILE3.TMP',status='NEW', FORM="FORMATTED")
+    Open(newunit=u5,file='FILE5.TMP',status='NEW', FORM="FORMATTED")
 
 ! WRITE THE HEADER WITH A "C" TO SHOW COMPRESSED ASCII FORM...
 
@@ -653,7 +653,7 @@ Contains
       Character(80)  :: pdline,delin1,delin2
       Character(160) :: newde
       Integer        :: fldnum,fldbeg,fldend, iend
-      Integer        :: chrptr,newptr,pdptr,pdcnt
+      Integer        :: chrptr,pdptr,pdcnt
       Integer        :: lfld(20)
       Integer        :: i, il
       scoln = ":"
@@ -830,7 +830,7 @@ Contains
 
       Character(*), Intent(IN)  :: outfil
 
-      Integer       :: ierr, iend
+      Integer       :: iend
       Character(80) :: text
       Integer       :: length
       Logical       :: exists

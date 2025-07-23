@@ -87,7 +87,7 @@ Module forIGES
 
    Integer,       Allocatable :: model_entities(:)
    !! Array of model entity numbers in file 
-   Character(80), Allocatable :: Srecords(:)
+   Character(80), ALLOCATABLE :: Srecords(:)
    !! Array containing the S section records
    Character(80), Allocatable :: Grecords(:)
    !! Array containing the G section records
@@ -453,9 +453,9 @@ Contains
  
     Class(IGES_t),              Intent(IN)    :: this
     !! this IGES_t passed argument
-    Character(80), Allocatable, Intent(INOUT) :: Srecords(:)
+    Character(80), ALLOCATABLE, Intent(INOUT) :: Srecords(:)
     !! Output S records array
-    Character(80), Optional,    Intent(IN)    :: newrecs(:)
+    Character(80), Optional, Intent(IN)    :: newrecs(:)
     !! Optional array of S records to be used in place of the input records
     !! stored in IGES_t
 
@@ -463,24 +463,29 @@ Contains
 
 !! make S records from either the current IGES_t values or user supplied
 !! newrecs
+    Character(80) :: buffer
 
     If (PRESENT(newrecs)) Then
       ns = SIZE(newrecs)
       ALLOCATE(Srecords(ns))
       Do i=1, ns
         Srecords(i)        = REPEAT(" ", 80)
-        Srecords(i)(73:73) = "S"
-        Write(Srecords(i)(74:80),'(i7)') i
-        Srecords(i)(1:72)  = newrecs(i)(1:72)   
+        buffer = REPEAT(" ",80)
+        buffer(1:72) = newrecs(i)(1:72)
+        buffer(73:73) = "S"
+        Write(buffer(74:80),'(i7)') i
+        Srecords(i)(1:80) = buffer(1:80) 
       End Do
     Else
       ns = SIZE(this%Srecords)
       ALLOCATE(Srecords(ns))
       Do i=1, ns
         Srecords(i)        = REPEAT(" ", 80)
-        Srecords(i)(73:73) = "S"
-        Write(Srecords(i)(74:80),'(i7)') i
-        Srecords(i)(1:72)  = this%Srecords(i)(1:72)   
+        buffer = REPEAT(" ",80)
+        buffer(1:72) = newrecs(i)(1:72)
+        buffer(73:73) = "S"
+        Write(buffer(74:80),'(i7)') i
+        Srecords(i)(1:80) = buffer(1:80) 
       End Do
     End If
  
@@ -494,7 +499,6 @@ Contains
     Character(80),  Intent(IN)    :: Drecords(:)
     Character(80),  Intent(IN)    :: Precords(:)
 
-    Character(80) :: Tsection
     Integer :: i, numS, numG, numD, numP
     
     numS = SIZE(Srecords)
@@ -525,6 +529,7 @@ Contains
     Do i=1, numS
       this%Srecords(i)(73:80) = "       "
     End Do
+
   End Subroutine createIGESfromRecs
 
   Subroutine getG(this)
@@ -1577,7 +1582,7 @@ Contains
     Integer,         Intent(IN)    :: types(:)
     !! Array of desired entity types
 
-    Integer :: i, j, np, nd, entity_type
+    Integer :: i, np, nd, entity_type
 
     Call newDlist%init()
     Call newPlist%init()
@@ -1627,7 +1632,7 @@ Contains
     Integer,         Intent(IN)    :: etype
     !! Array of desired entity types
 
-    Integer :: i, j, np, nd, entity_type
+    Integer :: i, np, nd, entity_type
 
     Call newDlist%init()
     Call newPlist%init()
@@ -1677,7 +1682,7 @@ Contains
     Integer,         Intent(IN)    :: types(:)
     !! Array of desired entity types
 
-    Integer :: i, j, np, nd, entity_type
+    Integer :: i, np, nd, entity_type
 
     Type(DEnode_t), Pointer :: DEnode
     Type(PEnode_t), Pointer :: PEnode
@@ -1734,7 +1739,7 @@ Contains
     Integer,         Intent(IN)    :: etype
     !! desired entity type
 
-    Integer :: i, j, np, nd, entity_type
+    Integer :: i, np, nd, entity_type
 
     Type(DEnode_t), Pointer :: DEnode
     Type(PEnode_t), Pointer :: PEnode
