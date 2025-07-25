@@ -4960,7 +4960,7 @@ Contains
 
     k = this%K
     m = this%M
-    nfields = 13 + SIZE(this%T) + 4*(k+1)
+    nfields = 12 + SIZE(this%T) + 4*(k+1)
 
     ALLOCATE(fields(nfields))
 
