@@ -1536,8 +1536,9 @@ Contains
     ALLOCATE(fields(nfields))
 
     Do i=1, nfields
-      If (string(fs(i-1):fe(i+1)) == ",," .OR.                               &  
-          string(fs(i-1):fe(i+1)) == ",/") Then
+! An empty field (two consecutive separators, e.g. ",," or ",/") has no
+! characters between its separators, so its end is before its start
+      If (fe(i) < fs(i)) Then
         fields(i)%str = "0"
       Else
         fields(i)%str = string(fs(i):fe(i))
@@ -6101,8 +6102,11 @@ Contains
    
     Call getEntityFields(string, fields)
 
+! fields 1-5 hold ET, TYPE, PREF, SPTR and N; the curve data start at
+! field 6 and is always points at the last field read
     is = 5
-    Do i = 1,N 
+    Do i = 1,N
+      is = is+1
       Read(fields(is)%str, *) CRVPT(i)
       is = is+1
       Read(fields(is)%str,*)  SENSE(i)
